@@ -1,0 +1,18 @@
+# Node and environment
+node_modules/
+dist/
+build/
+
+# Environment files
+.env
+.env.*
+.env.local
+backend/.env
+frontend/.env
+
+# Ignore nested frontend git metadata (prevent submodule errors)
+frontend/.git
+
+# Editor / OS
+.vscode/
+*.log
