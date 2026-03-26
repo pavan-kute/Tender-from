@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://tender-from.onrender.com",
+  baseURL: "https://tender-from.onrender.com/api",
 });
 
 // attach token from localStorage if present
