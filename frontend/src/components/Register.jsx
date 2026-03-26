@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
 
 function Register() {
@@ -173,11 +173,11 @@ function Register() {
           <button className="btn btn-success w-100" disabled={submitting}>{submitting ? (statusMessage || "Please wait...") : "Register"}</button>
         </form>
         <p className="text-center mt-3">
-  Already have an account?{" "}
-  <a href="/login" className="text-primary fw-bold">
-    Login
-  </a>
-</p>
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary fw-bold">
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

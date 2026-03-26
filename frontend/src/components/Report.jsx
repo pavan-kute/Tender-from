@@ -6,11 +6,24 @@ import { useEffect, useState } from "react";
 
 function Report() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const load = async () => {
-    const d = await getTenders();
-    setData(d);
+    setLoading(true);
+    setError("");
+
+    try {
+      const d = await getTenders();
+      setData(d);
+    } catch (err) {
+      console.error(err);
+      setData([]);
+      setError(err.message || "Failed to load tenders.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -41,7 +54,7 @@ function Report() {
       await load();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete tender. See console for details.");
+      alert(err.message || "Failed to delete tender.");
     } finally {
       setDeletingId(null);
     }
@@ -53,6 +66,11 @@ function Report() {
     <div className="container mt-4">
       <h3>Report</h3>
       <button className="btn btn-success mb-2" onClick={exportExcel}>Export Excel</button>
+      {loading && <div className="alert alert-info">Loading tenders...</div>}
+      {!!error && <div className="alert alert-danger">{error}</div>}
+      {!loading && !error && data.length === 0 && (
+        <div className="alert alert-secondary">No tenders found in the online database yet.</div>
+      )}
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -63,33 +81,33 @@ function Report() {
           </tr>
         </thead>
         <tbody>
-  {data.map((item, i) => (
-    <tr key={i}>
-      <td>{item.fullName}</td>
-      <td>{item.goodsType}</td>
-      <td>{item.mobile}</td>
-      <td>
-        <button
-          className="btn btn-warning btn-sm me-2"
-          onClick={() => {
-            if (!isAuthed) return alert("You must be logged in to edit a tender.");
-            navigate("/tender", { state: { item, i } });
-          }}
-          disabled={!isAuthed}
-        >
-          Edit
-        </button>
-        <button
-          className="btn btn-danger btn-sm"
-          onClick={() => handleDelete(item, i)}
-          disabled={deletingId === (item?._id ?? item?.id ?? i)}
-        >
-          {deletingId === (item?._id ?? item?.id ?? i) ? "Deleting..." : "Delete"}
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+          {data.map((item, i) => (
+            <tr key={item?._id ?? item?.id ?? i}>
+              <td>{item.fullName}</td>
+              <td>{item.goodsType}</td>
+              <td>{item.mobile}</td>
+              <td>
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() => {
+                    if (!isAuthed) return alert("You must be logged in to edit a tender.");
+                    navigate("/tender", { state: { item, i } });
+                  }}
+                  disabled={!isAuthed}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(item, i)}
+                  disabled={deletingId === (item?._id ?? item?.id ?? i)}
+                >
+                  {deletingId === (item?._id ?? item?.id ?? i) ? "Deleting..." : "Delete"}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );

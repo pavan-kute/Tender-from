@@ -22,15 +22,5 @@ configureCloudinary();
 app.use("/api/tenders", require("./routes/tenders"));
 app.use("/api/users", require("./routes/users"));
 
-// basic health route for Render / uptime checks
-app.get("/api/health", (req, res) => {
-	res.json({ status: "ok", time: new Date().toISOString() });
-});
-
-// root route
-app.get("/", (req, res) => {
-	res.send("Delta Tender API is running");
-});
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

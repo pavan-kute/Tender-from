@@ -1,8 +1,18 @@
 
 import API from "../api";
 
-// Attempt backend calls; if they fail, fall back to localStorage.
 const LOCAL_KEY = "tenders";
+
+const canUseLocalFallback = () => {
+  if (import.meta.env.DEV) return true;
+  if (typeof window === "undefined") return false;
+  return ["localhost", "127.0.0.1"].includes(window.location.hostname);
+};
+
+const getErrorMessage = (err, fallbackMessage) =>
+  err?.response?.data?.message ||
+  err?.message ||
+  fallbackMessage;
 
 export const saveTender = async (data) => {
   try {
@@ -19,6 +29,10 @@ export const saveTender = async (data) => {
     });
     return res.data;
   } catch (err) {
+    if (!canUseLocalFallback()) {
+      throw new Error(getErrorMessage(err, "Failed to save tender to the server."));
+    }
+
     const old = JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
     const saved = { ...data };
     old.push(saved);
@@ -32,6 +46,10 @@ export const getTenders = async () => {
     const res = await API.get("/tenders");
     return res.data;
   } catch (err) {
+    if (!canUseLocalFallback()) {
+      throw new Error(getErrorMessage(err, "Failed to load tenders from the server."));
+    }
+
     return JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
   }
 };
@@ -53,6 +71,10 @@ export const updateTender = async (identifier, updatedData) => {
       return true;
     }
   } catch (err) {
+    if (!canUseLocalFallback()) {
+      throw new Error(getErrorMessage(err, "Failed to update tender on the server."));
+    }
+
     // fallback to index-based update
     const data = JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
     if (typeof identifier === "number") {
@@ -77,6 +99,10 @@ export const deleteTender = async (identifier) => {
     await API.delete(`/tenders/${identifier}`);
     return true;
   } catch (err) {
+    if (!canUseLocalFallback()) {
+      throw new Error(getErrorMessage(err, "Failed to delete tender from the server."));
+    }
+
     // if authenticated but server fails, fall back to localStorage deletion for offline mode
     const data = JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
     if (typeof identifier === "number") {

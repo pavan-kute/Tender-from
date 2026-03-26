@@ -121,7 +121,7 @@ function TenderForm({ editData, editIndex }) {
       }, 800);
     } catch (err) {
       console.error(err);
-      setStatusMessage("Failed to submit tender. See console.");
+      setStatusMessage(err.message || "Failed to submit tender.");
       setSubmitting(false);
       setTimeout(() => setStatusMessage(""), 3000);
     }

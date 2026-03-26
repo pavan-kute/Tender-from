@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
 
 function Login() {
@@ -88,7 +88,7 @@ function Login() {
         </form>
 
         <p className="text-center mt-3">
-          New User? <a href="/register" className="fw-bold">Sign Up</a>
+          New User? <Link to="/register" className="fw-bold">Sign Up</Link>
         </p>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "https://tender-from.onrender.com/api").replace(/\/$/, "");
+
 const API = axios.create({
-  baseURL: "https://tender-from.onrender.com/api",
+  baseURL: API_BASE_URL,
 });
 
 // attach token from localStorage if present

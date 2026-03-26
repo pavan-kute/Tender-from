@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import TenderPage from "./pages/TenderPage";
@@ -7,7 +7,7 @@ import Header from "./components/Header";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Header />
       <div className="container mt-3">
         <Routes>
@@ -18,7 +18,7 @@ function App() {
         <Route path="/report" element={<ReportPage />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
