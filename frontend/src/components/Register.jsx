@@ -50,9 +50,8 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (submitting) return; // prevent double click
+    if (submitting) return;
 
-    // Validation
     if (
       !form.fname ||
       !form.mname ||
@@ -77,7 +76,6 @@ function Register() {
       return;
     }
 
-    // submit to backend
     const formData = new FormData();
     formData.append("fname", form.fname);
     formData.append("mname", form.mname);
@@ -93,7 +91,7 @@ function Register() {
     API.post("/users/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
-      .then((res) => {
+      .then(() => {
         setStatusMessage("Registration Successful");
         setTimeout(() => {
           setSubmitting(false);
@@ -111,41 +109,50 @@ function Register() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card p-4 shadow col-md-5 mx-auto">
-        <h3 className="text-center mb-3">Registration</h3>
+    <section className="auth-page">
+      <div className="auth-card auth-card--wide">
+        <div className="page-header text-center">
+          <span className="page-kicker">Create Account</span>
+          <h1 className="page-title">Registration</h1>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <input className="form-control mb-2" name="fname" placeholder="First Name *" onChange={handleChange} disabled={submitting} />
-          <input className="form-control mb-2" name="mname" placeholder="Middle Name *" onChange={handleChange} disabled={submitting} />
-          <input className="form-control mb-2" name="lname" placeholder="Last Name *" onChange={handleChange} disabled={submitting} />
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="form-grid form-grid--two">
+            <input className="form-control input-strong" name="fname" placeholder="First Name *" onChange={handleChange} disabled={submitting} />
+            <input className="form-control input-strong" name="mname" placeholder="Middle Name *" onChange={handleChange} disabled={submitting} />
+          </div>
+
+          <input className="form-control input-strong" name="lname" placeholder="Last Name *" onChange={handleChange} disabled={submitting} />
 
           <input
-            className="form-control mb-2"
+            className="form-control input-strong"
             value={fullName}
             placeholder="Full Name *"
             disabled
           />
 
           <input
-            className="form-control mb-2"
+            className="form-control input-strong"
             name="mobile"
             placeholder="Mobile Number *"
             onChange={handleChange}
             disabled={submitting}
           />
 
-          <label>Photo (JPG / JPEG / PNG ≤ 1MB) *</label>
+          <div>
+            <label className="field-label">Photo Upload *</label>
+            <p className="file-note">JPG / JPEG / PNG, maximum 1 MB.</p>
+          </div>
           <input
             type="file"
-            className="form-control mb-2"
+            className="form-control input-strong"
             onChange={handleFileChange}
             disabled={submitting}
           />
 
           <input
             type="email"
-            className="form-control mb-2"
+            className="form-control input-strong"
             name="email"
             placeholder="Email (Username) *"
             onChange={handleChange}
@@ -154,7 +161,7 @@ function Register() {
 
           <input
             type="password"
-            className="form-control mb-2"
+            className="form-control input-strong"
             name="password"
             placeholder="Password *"
             onChange={handleChange}
@@ -163,25 +170,24 @@ function Register() {
 
           <input
             type="password"
-            className="form-control mb-3"
+            className="form-control input-strong"
             name="confirmPassword"
             placeholder="Confirm Password *"
             onChange={handleChange}
             disabled={submitting}
           />
 
-          <button className="btn btn-success w-100" disabled={submitting}>{submitting ? (statusMessage || "Please wait...") : "Register"}</button>
+          <button className="app-btn app-btn--accent w-100" disabled={submitting}>
+            {submitting ? (statusMessage || "Please wait...") : "Register"}
+          </button>
         </form>
-        <p className="text-center mt-3">
-          Already have an account?{" "}
-          <Link to="/login" className="text-primary fw-bold">
-            Login
-          </Link>
+
+        <p className="form-meta">
+          Already have an account? <Link to="/login" className="form-link">Login</Link>
         </p>
       </div>
-    </div>
+    </section>
   );
-
 }
 
 export default Register;

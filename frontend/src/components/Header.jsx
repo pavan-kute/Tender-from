@@ -1,7 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   let user = null;
   try {
@@ -10,41 +13,66 @@ function Header() {
     user = null;
   }
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/login");
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/"><b>Tender Form </b></Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/tender">Tender</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/report">Report</Link>
-            </li>
-          </ul>
+    <header className="site-header">
+      <div className="site-header__bar">
+        <Link className="site-brand" to="/">
+          <span className="site-brand__title">Tender Form</span>
+        </Link>
 
-          <div className="d-flex align-items-center">
-            {user && user.fullName ? (
-              <>
-                <span className="me-3">Hello, {user.fullName}</span>
-                <button className="btn btn-sm btn-outline-secondary" onClick={handleLogout}>Logout</button>
-              </>
-            ) : (
-              <span className="text-muted">Not logged in</span>
-            )}
-          </div>
+        <button
+          type="button"
+          className="menu-toggle"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation menu"
+        >
+          {menuOpen ? "Close Menu" : "Open Menu"}
+        </button>
+      </div>
+
+      <div className={`site-header__panel ${menuOpen ? "is-open" : ""}`}>
+        <nav className="site-nav" aria-label="Primary">
+          <NavLink className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`} to="/login">
+            Login
+          </NavLink>
+          <NavLink className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`} to="/register">
+            Register
+          </NavLink>
+          <NavLink className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`} to="/tender">
+            Tender Form
+          </NavLink>
+          <NavLink className={({ isActive }) => `site-nav__link${isActive ? " active" : ""}`} to="/report">
+            Report
+          </NavLink>
+        </nav>
+
+        <div className="site-user">
+          {user && user.fullName ? (
+            <>
+              <div className="site-user__card">
+                <span className="site-user__label">Signed in</span>
+                <span className="site-user__name">{user.fullName}</span>
+              </div>
+              <button className="app-btn app-btn--soft" onClick={handleLogout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <p className="site-user__muted">Not logged in</p>
+          )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
 

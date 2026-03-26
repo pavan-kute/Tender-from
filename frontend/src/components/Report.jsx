@@ -1,4 +1,3 @@
-
 import { getTenders, deleteTender } from "../utils/storage";
 import * as XLSX from "xlsx";
 import { useNavigate } from "react-router-dom";
@@ -63,53 +62,66 @@ function Report() {
   const isAuthed = !!(JSON.parse(localStorage.getItem("user") || "null")?.token);
 
   return (
-    <div className="container mt-4">
-      <h3>Report</h3>
-      <button className="btn btn-success mb-2" onClick={exportExcel}>Export Excel</button>
-      {loading && <div className="alert alert-info">Loading tenders...</div>}
-      {!!error && <div className="alert alert-danger">{error}</div>}
+    <section className="report-shell">
+      <div className="page-header">
+        <span className="page-kicker">Data Overview</span>
+        <h1 className="page-title">Tender Report</h1>
+      </div>
+
+      <div className="report-toolbar">
+        <button className="app-btn app-btn--accent" onClick={exportExcel}>Export Excel</button>
+        <div className="report-summary">Total records: {data.length}</div>
+      </div>
+
+      {loading && <div className="status-banner status-banner--info">Loading tenders...</div>}
+      {!!error && <div className="status-banner status-banner--danger">{error}</div>}
       {!loading && !error && data.length === 0 && (
-        <div className="alert alert-secondary">No tenders found in the online database yet.</div>
+        <div className="status-banner status-banner--neutral">No tenders found in the online database yet.</div>
       )}
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Goods</th>
-            <th>Mobile</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, i) => (
-            <tr key={item?._id ?? item?.id ?? i}>
-              <td>{item.fullName}</td>
-              <td>{item.goodsType}</td>
-              <td>{item.mobile}</td>
-              <td>
-                <button
-                  className="btn btn-warning btn-sm me-2"
-                  onClick={() => {
-                    if (!isAuthed) return alert("You must be logged in to edit a tender.");
-                    navigate("/tender", { state: { item, i } });
-                  }}
-                  disabled={!isAuthed}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDelete(item, i)}
-                  disabled={deletingId === (item?._id ?? item?.id ?? i)}
-                >
-                  {deletingId === (item?._id ?? item?.id ?? i) ? "Deleting..." : "Delete"}
-                </button>
-              </td>
+
+      <div className="table-shell">
+        <table className="table table-bordered table-wrap mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Goods</th>
+              <th>Mobile</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {data.map((item, i) => (
+              <tr key={item?._id ?? item?.id ?? i}>
+                <td data-label="Name">{item.fullName}</td>
+                <td data-label="Goods">{item.goodsType}</td>
+                <td data-label="Mobile">{item.mobile}</td>
+                <td data-label="Actions">
+                  <div className="action-row">
+                    <button
+                      className="app-btn app-btn--soft"
+                      onClick={() => {
+                        if (!isAuthed) return alert("You must be logged in to edit a tender.");
+                        navigate("/tender", { state: { item, i } });
+                      }}
+                      disabled={!isAuthed}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="app-btn app-btn--danger"
+                      onClick={() => handleDelete(item, i)}
+                      disabled={deletingId === (item?._id ?? item?.id ?? i)}
+                    >
+                      {deletingId === (item?._id ?? item?.id ?? i) ? "Deleting..." : "Delete"}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
 

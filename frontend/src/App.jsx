@@ -8,15 +8,19 @@ import Header from "./components/Header";
 function App() {
   return (
     <HashRouter>
-      <Header />
-      <div className="container mt-3">
-        <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/tender" element={<TenderPage />} />
-        <Route path="/report" element={<ReportPage />} />
-        </Routes>
+      <div className="app-shell">
+        <Header />
+        <main className="app-main">
+          <div className="app-content">
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/tender" element={<TenderPage />} />
+              <Route path="/report" element={<ReportPage />} />
+            </Routes>
+          </div>
+        </main>
       </div>
     </HashRouter>
   );
